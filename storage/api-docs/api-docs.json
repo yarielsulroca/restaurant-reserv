@@ -1,76 +1,369 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API de Reservas",
-        "description": "API para gestionar reservas de restaurante",
+        "title": "API Restaurante",
+        "description": "API para la gestión de restaurantes",
+        "contact": {
+            "name": "Soporte API",
+            "email": "soporte@restaurante.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "http://localhost",
+            "description": "API Server"
+        }
+    ],
     "paths": {
-        "/api/v1/reservas": {
+        "/api/v1/mesas": {
             "get": {
                 "tags": [
-                    "Reservas"
+                    "Mesas"
                 ],
-                "summary": "Get a list of reservas",
-                "operationId": "d31270690bd9559009b7c90e03ee0fe0",
+                "summary": "Lista todas las mesas",
+                "operationId": "c6cbe50a654a8b29e414c8631a2bafdf",
+                "parameters": [
+                    {
+                        "name": "zona",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "capacidad",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Successful operation",
+                        "description": "Lista de mesas",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Reserva"
-                                    }
+                                    "$ref": "#/components/schemas/MesaCollection"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "No autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Crea una nueva mesa",
+                "operationId": "8388b6340022aa64251a0dd69734d8cd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreMesaRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Mesa creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MesaResource"
+                                }
+                            }
+                        }
                     },
-                    "403": {
-                        "description": "Forbidden"
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mesas/{mesa}": {
+            "get": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Muestra una mesa específica",
+                "operationId": "fe3ca9a9095fbd0eb1302b1acf94ae54",
+                "parameters": [
+                    {
+                        "name": "mesa",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mesa encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MesaResource"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Not Found"
+                        "description": "Mesa no encontrada"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Actualiza una mesa existente",
+                "operationId": "3328dad430eab185a8a379dbb9f1d682",
+                "parameters": [
+                    {
+                        "name": "mesa",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateMesaRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mesa actualizada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MesaResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Mesa no encontrada"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Elimina una mesa",
+                "operationId": "64c91f4f0a4bb46ef30972e815b946bd",
+                "parameters": [
+                    {
+                        "name": "mesa",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Mesa eliminada"
+                    },
+                    "404": {
+                        "description": "Mesa no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/mesas/available": {
+            "get": {
+                "tags": [
+                    "Mesas"
+                ],
+                "summary": "Lista las mesas disponibles",
+                "operationId": "d08e7792e0db8f5b31be72920f2be634",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "time",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "time"
+                        }
+                    },
+                    {
+                        "name": "guests",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de mesas disponibles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MesaCollection"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservas": {
+            "get": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Lista todas las reservas",
+                "operationId": "d31270690bd9559009b7c90e03ee0fe0",
+                "parameters": [
+                    {
+                        "name": "fecha",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "estado",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "mesa_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de reservas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReservaCollection"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
                     "Reservas"
                 ],
-                "summary": "Crear una nueva reserva",
+                "summary": "Crea una nueva reserva",
                 "operationId": "982e9803d84704d154c36082a018d4e5",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "hora_inicio",
-                                    "hora_fin",
-                                    "numero_personas"
-                                ],
-                                "properties": {
-                                    "hora_inicio": {
-                                        "type": "string",
-                                        "format": "datetime",
-                                        "example": "2024-12-17 10:00:00"
-                                    },
-                                    "hora_fin": {
-                                        "type": "string",
-                                        "format": "datetime",
-                                        "example": "2024-12-17 11:00:00"
-                                    },
-                                    "numero_personas": {
-                                        "type": "integer",
-                                        "example": 4
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/StoreReservaRequest"
                             }
                         }
                     }
@@ -81,32 +374,33 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Reserva"
+                                    "$ref": "#/components/schemas/ReservaResource"
                                 }
                             }
                         }
                     },
-                    "401": {
-                        "description": "No autorizado"
-                    },
                     "422": {
                         "description": "Error de validación"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
-        "/api/v1/reservas/{id}": {
+        "/api/v1/reservas/{reserva}": {
             "get": {
                 "tags": [
                     "Reservas"
                 ],
-                "summary": "Ver detalle de reserva",
-                "operationId": "e734003b71e06868603a2445a1fae7b8",
+                "summary": "Muestra una reserva específica",
+                "operationId": "2398ade4d4df3f92274444d6cb473653",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "reserva",
                         "in": "path",
-                        "description": "ID de la reserva",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -115,37 +409,35 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detalle de la reserva",
+                        "description": "Reserva encontrada",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Reserva"
+                                    "$ref": "#/components/schemas/ReservaResource"
                                 }
                             }
                         }
                     },
-                    "401": {
-                        "description": "No autorizado"
-                    },
-                    "403": {
-                        "description": "Prohibido - No tiene permisos para ver esta reserva"
-                    },
                     "404": {
                         "description": "Reserva no encontrada"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
                     "Reservas"
                 ],
-                "summary": "Actualizar una reserva existente",
-                "operationId": "715dcd7ee90c923d4422834e8b7c3352",
+                "summary": "Actualiza una reserva existente",
+                "operationId": "6088b63d284c0a7f1c9b90afc8bd5b87",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "reserva",
                         "in": "path",
-                        "description": "ID de la reserva",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -157,62 +449,21 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "properties": {
-                                    "hora_inicio": {
-                                        "type": "string",
-                                        "format": "datetime",
-                                        "example": "2024-12-17 10:00:00"
-                                    },
-                                    "hora_fin": {
-                                        "type": "string",
-                                        "format": "datetime",
-                                        "example": "2024-12-17 11:00:00"
-                                    },
-                                    "numero_personas": {
-                                        "type": "integer",
-                                        "example": 4
-                                    },
-                                    "estado": {
-                                        "type": "string",
-                                        "enum": [
-                                            "pendiente",
-                                            "confirmada",
-                                            "cancelada",
-                                            "completada",
-                                            "expirada"
-                                        ]
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UpdateReservaRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Reserva actualizada exitosamente",
+                        "description": "Reserva actualizada",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Reserva actualizada exitosamente"
-                                        },
-                                        "reserva": {
-                                            "$ref": "#/components/schemas/Reserva"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/ReservaResource"
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "description": "No autorizado"
-                    },
-                    "403": {
-                        "description": "Prohibido - No tiene permisos para actualizar esta reserva"
                     },
                     "404": {
                         "description": "Reserva no encontrada"
@@ -220,21 +471,23 @@
                     "422": {
                         "description": "Error de validación"
                     }
-                }
-            }
-        },
-        "/api/v1/reservas/{id}/cancel": {
-            "put": {
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
                 "tags": [
                     "Reservas"
                 ],
-                "summary": "Cancelar una reserva",
-                "operationId": "0b2827832ad4c307ffb01944d4627f57",
+                "summary": "Elimina una reserva",
+                "operationId": "6228659039fb00362b1498c531173665",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "reserva",
                         "in": "path",
-                        "description": "ID de la reserva",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -242,223 +495,436 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Reserva cancelada exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Reserva cancelada exitosamente"
-                                        },
-                                        "reserva": {
-                                            "$ref": "#/components/schemas/Reserva"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "No autorizado"
-                    },
-                    "403": {
-                        "description": "Prohibido - No tiene permisos para cancelar esta reserva"
+                    "204": {
+                        "description": "Reserva eliminada"
                     },
                     "404": {
                         "description": "Reserva no encontrada"
-                    },
-                    "422": {
-                        "description": "No se puede cancelar la reserva en su estado actual"
                     }
-                }
-            }
-        },
-        "/api/v1/reservas/{id}/confirm": {
-            "patch": {
-                "tags": [
-                    "Reservas"
-                ],
-                "summary": "Confirmar una reserva (solo admin)",
-                "operationId": "b89d3146bd987c2846f84067356a33df",
-                "parameters": [
+                },
+                "security": [
                     {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID de la reserva",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "sanctum": []
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Reserva confirmada exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Reserva confirmada exitosamente"
-                                        },
-                                        "reserva": {
-                                            "$ref": "#/components/schemas/Reserva"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "No autorizado"
-                    },
-                    "403": {
-                        "description": "Prohibido - Solo los administradores pueden confirmar reservas"
-                    },
-                    "404": {
-                        "description": "Reserva no encontrada"
-                    },
-                    "422": {
-                        "description": "No se puede confirmar la reserva en su estado actual"
-                    }
-                }
-            }
-        },
-        "/api/v1/reservas/{id}/complete": {
-            "patch": {
-                "tags": [
-                    "Reservas"
-                ],
-                "summary": "Completar una reserva (solo admin)",
-                "operationId": "aa1e14cfef2e4cb7cabd2681c5059b46",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID de la reserva",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Reserva completada exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Reserva completada exitosamente"
-                                        },
-                                        "reserva": {
-                                            "$ref": "#/components/schemas/Reserva"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "No autorizado"
-                    },
-                    "403": {
-                        "description": "Prohibido - Solo los administradores pueden completar reservas"
-                    },
-                    "404": {
-                        "description": "Reserva no encontrada"
-                    },
-                    "422": {
-                        "description": "No se puede completar la reserva en su estado actual"
-                    }
-                }
+                ]
             }
         }
     },
     "components": {
         "schemas": {
-            "ReservationStatus": {
-                "description": "Estados posibles de una reserva",
-                "type": "string",
-                "enum": [
-                    "pendiente",
-                    "confirmada",
-                    "cancelada",
-                    "completada",
-                    "expirada"
-                ]
-            },
-            "Reserva": {
+            "Mesa": {
                 "required": [
-                    "user_id",
-                    "hora_inicio",
-                    "hora_fin",
-                    "numero_personas",
+                    "numero",
+                    "capacidad",
                     "estado"
                 ],
                 "properties": {
                     "id": {
-                        "description": "ID de la reserva",
                         "type": "integer",
-                        "format": "int64"
+                        "format": "int64",
+                        "example": 1
                     },
-                    "user_id": {
-                        "description": "ID del usuario",
+                    "numero": {
                         "type": "integer",
-                        "format": "int64"
+                        "example": 1
                     },
-                    "hora_inicio": {
-                        "description": "Hora de inicio de la reserva",
-                        "type": "string",
-                        "format": "datetime"
-                    },
-                    "hora_fin": {
-                        "description": "Hora de fin de la reserva",
-                        "type": "string",
-                        "format": "datetime"
-                    },
-                    "numero_personas": {
-                        "description": "Número de personas",
-                        "type": "integer"
+                    "capacidad": {
+                        "type": "integer",
+                        "example": 4
                     },
                     "estado": {
-                        "description": "Estado de la reserva",
+                        "type": "string",
+                        "enum": [
+                            "disponible",
+                            "ocupada",
+                            "reservada"
+                        ],
+                        "example": "disponible"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "MesaResource": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/Mesa"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreMesaRequest": {
+                "required": [
+                    "numero",
+                    "capacidad"
+                ],
+                "properties": {
+                    "numero": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "capacidad": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "estado": {
+                        "type": "string",
+                        "enum": [
+                            "disponible",
+                            "ocupada",
+                            "reservada"
+                        ],
+                        "example": "disponible"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateMesaRequest": {
+                "properties": {
+                    "numero": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "capacidad": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "estado": {
+                        "type": "string",
+                        "enum": [
+                            "disponible",
+                            "ocupada",
+                            "reservada"
+                        ],
+                        "example": "disponible"
+                    }
+                },
+                "type": "object"
+            },
+            "MesaCollection": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Mesa"
+                        }
+                    },
+                    "links": {
+                        "properties": {
+                            "first": {
+                                "type": "string"
+                            },
+                            "last": {
+                                "type": "string"
+                            },
+                            "prev": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "next": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "meta": {
+                        "properties": {
+                            "current_page": {
+                                "type": "integer"
+                            },
+                            "from": {
+                                "type": "integer"
+                            },
+                            "last_page": {
+                                "type": "integer"
+                            },
+                            "path": {
+                                "type": "string"
+                            },
+                            "per_page": {
+                                "type": "integer"
+                            },
+                            "to": {
+                                "type": "integer"
+                            },
+                            "total": {
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "Reserva": {
+                "required": [
+                    "mesa_id",
+                    "fecha",
+                    "hora",
+                    "cliente_nombre",
+                    "cliente_email",
+                    "numero_personas"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "mesa_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "fecha": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-12-25"
+                    },
+                    "hora": {
+                        "type": "string",
+                        "format": "time",
+                        "example": "20:00:00"
+                    },
+                    "cliente_nombre": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "cliente_email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "cliente_telefono": {
+                        "type": "string",
+                        "example": "+1234567890"
+                    },
+                    "numero_personas": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "estado": {
                         "type": "string",
                         "enum": [
                             "pendiente",
                             "confirmada",
                             "cancelada",
-                            "completada",
-                            "expirada"
-                        ]
+                            "completada"
+                        ],
+                        "example": "pendiente"
+                    },
+                    "notas": {
+                        "type": "string",
+                        "example": "Celebración de cumpleaños"
                     },
                     "created_at": {
-                        "description": "Fecha de creación",
                         "type": "string",
-                        "format": "datetime"
+                        "format": "date-time"
                     },
                     "updated_at": {
-                        "description": "Fecha de última actualización",
                         "type": "string",
-                        "format": "datetime"
+                        "format": "date-time"
+                    },
+                    "mesa": {
+                        "$ref": "#/components/schemas/Mesa"
                     }
                 },
                 "type": "object"
+            },
+            "ReservaResource": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/Reserva"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreReservaRequest": {
+                "required": [
+                    "mesa_id",
+                    "fecha",
+                    "hora",
+                    "cliente_nombre",
+                    "cliente_email",
+                    "numero_personas"
+                ],
+                "properties": {
+                    "mesa_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "fecha": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-12-25"
+                    },
+                    "hora": {
+                        "type": "string",
+                        "format": "time",
+                        "example": "20:00:00"
+                    },
+                    "cliente_nombre": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "cliente_email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "cliente_telefono": {
+                        "type": "string",
+                        "example": "+1234567890"
+                    },
+                    "numero_personas": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "notas": {
+                        "type": "string",
+                        "example": "Celebración de cumpleaños"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateReservaRequest": {
+                "properties": {
+                    "mesa_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "fecha": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-12-25"
+                    },
+                    "hora": {
+                        "type": "string",
+                        "format": "time",
+                        "example": "20:00:00"
+                    },
+                    "cliente_nombre": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "cliente_email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "cliente_telefono": {
+                        "type": "string",
+                        "example": "+1234567890"
+                    },
+                    "numero_personas": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "estado": {
+                        "type": "string",
+                        "enum": [
+                            "pendiente",
+                            "confirmada",
+                            "cancelada",
+                            "completada"
+                        ],
+                        "example": "confirmada"
+                    },
+                    "notas": {
+                        "type": "string",
+                        "example": "Celebración de cumpleaños"
+                    }
+                },
+                "type": "object"
+            },
+            "ReservaCollection": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Reserva"
+                        }
+                    },
+                    "links": {
+                        "properties": {
+                            "first": {
+                                "type": "string"
+                            },
+                            "last": {
+                                "type": "string"
+                            },
+                            "prev": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "next": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "meta": {
+                        "properties": {
+                            "current_page": {
+                                "type": "integer"
+                            },
+                            "from": {
+                                "type": "integer"
+                            },
+                            "last_page": {
+                                "type": "integer"
+                            },
+                            "path": {
+                                "type": "string"
+                            },
+                            "per_page": {
+                                "type": "integer"
+                            },
+                            "to": {
+                                "type": "integer"
+                            },
+                            "total": {
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Laravel Sanctum token authentication",
+                "scheme": "bearer"
             }
         }
     },
     "tags": [
         {
+            "name": "Mesas",
+            "description": "API Endpoints de mesas del restaurante"
+        },
+        {
             "name": "Reservas",
-            "description": "Reservas"
+            "description": "API Endpoints de reservas del restaurante"
+        }
+    ],
+    "security": [
+        {
+            "sanctum": []
         }
     ]
 }

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->enum('zona', ['Interior', 'Exterior', 'Terraza'])->default('Interior'); 
             $table->string('ubicacion')->nullable(); 
             $table->enum('status', ['available', 'occupied', 'reserved'])->default('available'); 
-            $table->string('estado')->default('disponible'); 
             $table->timestamps(); });
     }
 

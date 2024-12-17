@@ -7,7 +7,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use OwenIt\Auditing\Auditable;
-
+/**
+ * @OA\Schema(
+ *     schema="Reserva",
+ *     required={"user_id", "hora_inicio", "hora_fin", "numero_personas", "estado"},
+ *     @OA\Property(property="id", type="integer", format="int64", description="ID de la reserva"),
+ *     @OA\Property(property="user_id", type="integer", format="int64", description="ID del usuario"),
+ *     @OA\Property(property="hora_inicio", type="string", format="datetime", description="Hora de inicio de la reserva"),
+ *     @OA\Property(property="hora_fin", type="string", format="datetime", description="Hora de fin de la reserva"),
+ *     @OA\Property(property="numero_personas", type="integer", description="Número de personas"),
+ *     @OA\Property(property="estado", type="string", enum={"pendiente", "confirmada", "cancelada", "completada", "expirada"}, description="Estado de la reserva"),
+ *     @OA\Property(property="created_at", type="string", format="datetime", description="Fecha de creación"),
+ *     @OA\Property(property="updated_at", type="string", format="datetime", description="Fecha de última actualización")
+ * )
+ */
 class Reserva extends Model implements AuditableContract
 {
     use HasFactory, Auditable;

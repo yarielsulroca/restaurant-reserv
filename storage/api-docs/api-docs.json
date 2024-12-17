@@ -1,0 +1,464 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Reservas",
+        "description": "API para gestionar reservas de restaurante",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/reservas": {
+            "get": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Get a list of reservas",
+                "operationId": "d31270690bd9559009b7c90e03ee0fe0",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Reserva"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Crear una nueva reserva",
+                "operationId": "982e9803d84704d154c36082a018d4e5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "hora_inicio",
+                                    "hora_fin",
+                                    "numero_personas"
+                                ],
+                                "properties": {
+                                    "hora_inicio": {
+                                        "type": "string",
+                                        "format": "datetime",
+                                        "example": "2024-12-17 10:00:00"
+                                    },
+                                    "hora_fin": {
+                                        "type": "string",
+                                        "format": "datetime",
+                                        "example": "2024-12-17 11:00:00"
+                                    },
+                                    "numero_personas": {
+                                        "type": "integer",
+                                        "example": 4
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reserva creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Reserva"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/v1/reservas/{id}": {
+            "get": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Ver detalle de reserva",
+                "operationId": "e734003b71e06868603a2445a1fae7b8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la reserva",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalle de la reserva",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Reserva"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "403": {
+                        "description": "Prohibido - No tiene permisos para ver esta reserva"
+                    },
+                    "404": {
+                        "description": "Reserva no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Actualizar una reserva existente",
+                "operationId": "715dcd7ee90c923d4422834e8b7c3352",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la reserva",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "hora_inicio": {
+                                        "type": "string",
+                                        "format": "datetime",
+                                        "example": "2024-12-17 10:00:00"
+                                    },
+                                    "hora_fin": {
+                                        "type": "string",
+                                        "format": "datetime",
+                                        "example": "2024-12-17 11:00:00"
+                                    },
+                                    "numero_personas": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "estado": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pendiente",
+                                            "confirmada",
+                                            "cancelada",
+                                            "completada",
+                                            "expirada"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Reserva actualizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Reserva actualizada exitosamente"
+                                        },
+                                        "reserva": {
+                                            "$ref": "#/components/schemas/Reserva"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "403": {
+                        "description": "Prohibido - No tiene permisos para actualizar esta reserva"
+                    },
+                    "404": {
+                        "description": "Reserva no encontrada"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/v1/reservas/{id}/cancel": {
+            "put": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Cancelar una reserva",
+                "operationId": "0b2827832ad4c307ffb01944d4627f57",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la reserva",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reserva cancelada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Reserva cancelada exitosamente"
+                                        },
+                                        "reserva": {
+                                            "$ref": "#/components/schemas/Reserva"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "403": {
+                        "description": "Prohibido - No tiene permisos para cancelar esta reserva"
+                    },
+                    "404": {
+                        "description": "Reserva no encontrada"
+                    },
+                    "422": {
+                        "description": "No se puede cancelar la reserva en su estado actual"
+                    }
+                }
+            }
+        },
+        "/api/v1/reservas/{id}/confirm": {
+            "patch": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Confirmar una reserva (solo admin)",
+                "operationId": "b89d3146bd987c2846f84067356a33df",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la reserva",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reserva confirmada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Reserva confirmada exitosamente"
+                                        },
+                                        "reserva": {
+                                            "$ref": "#/components/schemas/Reserva"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "403": {
+                        "description": "Prohibido - Solo los administradores pueden confirmar reservas"
+                    },
+                    "404": {
+                        "description": "Reserva no encontrada"
+                    },
+                    "422": {
+                        "description": "No se puede confirmar la reserva en su estado actual"
+                    }
+                }
+            }
+        },
+        "/api/v1/reservas/{id}/complete": {
+            "patch": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Completar una reserva (solo admin)",
+                "operationId": "aa1e14cfef2e4cb7cabd2681c5059b46",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la reserva",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reserva completada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Reserva completada exitosamente"
+                                        },
+                                        "reserva": {
+                                            "$ref": "#/components/schemas/Reserva"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "403": {
+                        "description": "Prohibido - Solo los administradores pueden completar reservas"
+                    },
+                    "404": {
+                        "description": "Reserva no encontrada"
+                    },
+                    "422": {
+                        "description": "No se puede completar la reserva en su estado actual"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ReservationStatus": {
+                "description": "Estados posibles de una reserva",
+                "type": "string",
+                "enum": [
+                    "pendiente",
+                    "confirmada",
+                    "cancelada",
+                    "completada",
+                    "expirada"
+                ]
+            },
+            "Reserva": {
+                "required": [
+                    "user_id",
+                    "hora_inicio",
+                    "hora_fin",
+                    "numero_personas",
+                    "estado"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID de la reserva",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "user_id": {
+                        "description": "ID del usuario",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "hora_inicio": {
+                        "description": "Hora de inicio de la reserva",
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "hora_fin": {
+                        "description": "Hora de fin de la reserva",
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "numero_personas": {
+                        "description": "Número de personas",
+                        "type": "integer"
+                    },
+                    "estado": {
+                        "description": "Estado de la reserva",
+                        "type": "string",
+                        "enum": [
+                            "pendiente",
+                            "confirmada",
+                            "cancelada",
+                            "completada",
+                            "expirada"
+                        ]
+                    },
+                    "created_at": {
+                        "description": "Fecha de creación",
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "updated_at": {
+                        "description": "Fecha de última actualización",
+                        "type": "string",
+                        "format": "datetime"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Reservas",
+            "description": "Reservas"
+        }
+    ]
+}

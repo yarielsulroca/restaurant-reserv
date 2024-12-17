@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MesaController;
-use App\Http\Controllers\Api\ReservaController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\ReservaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,14 +33,24 @@ Route::middleware('auth:sanctum')->group(function () {
     // Mesa Routes
     Route::get('/mesas/available', [MesaController::class, 'available']);
     Route::apiResource('/mesas', MesaController::class);
-
-    // Reserva Routes
-    Route::prefix('reservas')->group(function () {
-        Route::get('/', [ReservaController::class, 'index']);
-        Route::post('/', [ReservaController::class, 'store']);
-        Route::get('/{reserva}', [ReservaController::class, 'show']);
-        Route::put('/{reserva}', [ReservaController::class, 'update']);
-        Route::delete('/{reserva}', [ReservaController::class, 'destroy']);
-        Route::patch('/{reserva}/status/{status}', [ReservaController::class, 'updateStatus']);
+    //RESERVAS
+    Route::prefix('v1')->group(function () {
+        // Rutas protegidas que requieren autenticación
+        Route::middleware(['auth:sanctum'])->group(function () {
+            // Rutas de reservas
+            Route::prefix('reservas')->group(function () {
+                Route::get('/', [ReservaController::class, 'index']);
+                Route::post('/', [ReservaController::class, 'store']);
+                Route::get('/{reserva}', [ReservaController::class, 'show']);
+                Route::put('/{reserva}', [ReservaController::class, 'update']);
+                Route::delete('/{reserva}', [ReservaController::class, 'cancel']);
+                
+                // Rutas que requieren rol de administrador
+                Route::middleware(['role:admin'])->group(function () {
+                    Route::patch('/{reserva}/confirm', [ReservaController::class, 'confirm']);
+                    Route::patch('/{reserva}/complete', [ReservaController::class, 'complete']);
+                });
+            });
+        });
     });
 });

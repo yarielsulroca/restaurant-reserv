@@ -50,20 +50,6 @@ class Mesa extends Model
         };
     }
 
-    public function getStatusClassAttribute(): string
-    {
-        if ($this->estado === 'ocupada') {
-            return 'bg-red-100 text-red-800';
-        }
-
-        return match($this->status) {
-            'available' => 'bg-green-100 text-green-800',
-            'occupied' => 'bg-red-100 text-red-800',
-            'reserved' => 'bg-yellow-100 text-yellow-800',
-            'maintenance' => 'bg-gray-100 text-gray-800',
-            default => 'bg-gray-100 text-gray-800'
-        };
-    }
 
     public function hasReservations(): bool
     {
